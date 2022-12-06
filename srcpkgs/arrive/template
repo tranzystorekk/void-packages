@@ -1,0 +1,22 @@
+# Template file for 'arrive'
+pkgname=arrive
+version=0.3.0
+revision=1
+build_style=cargo
+build_helper=qemu
+short_desc="Simple CLI tool for interacting with Advent of Code"
+maintainer="Marcin Puc <tranzystorek.io@protonmail.com>"
+license="MIT"
+homepage="https://github.com/tranzystorek-io/arrive"
+changelog="https://github.com/tranzystorek-io/arrive/blob/master/CHANGELOG.md"
+distfiles="https://github.com/tranzystorek-io/arrive/archive/refs/tags/v${version}.tar.gz"
+checksum=f8bdb69abf0e9bd077839b6f6712f81bd98a26f4dd2f9ad38cdd3898a68f9b14
+
+post_install() {
+	vlicense LICENSE
+
+	for shell in bash fish zsh; do
+		vtargetrun "${DESTDIR}/usr/bin/arv" completion ${shell} > arv.${shell}
+		vcompletion arv.${shell} ${shell} arv
+	done
+}
