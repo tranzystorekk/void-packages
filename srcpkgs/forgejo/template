@@ -1,0 +1,34 @@
+# Template file for 'forgejo'
+pkgname=forgejo
+version=9.0.0
+revision=1
+build_style=go
+go_import_path="code.gitea.io/gitea"
+go_ldflags="-X main.Version=${version}"
+go_build_tags="bindata pam sqlite tidb"
+hostmakedepends="go-bindata"
+makedepends="pam-devel sqlite-devel"
+checkdepends="git openssh"
+depends="bash git"
+short_desc="Self-hosted lightweight software forge"
+maintainer="Marcin Puc <tranzystorek.io@protonmail.com>"
+license="GPL-3.0-or-later"
+homepage="https://forgejo.org/"
+changelog="https://codeberg.org/forgejo/forgejo/raw/branch/forgejo/RELEASE-NOTES.md"
+distfiles="https://codeberg.org/forgejo/forgejo/releases/download/v${version}/forgejo-src-${version}.tar.gz"
+checksum=21364d6c1635711189f25da5dc343b3b28e8ade20a5f00202301ccc364adc1d2
+
+system_accounts="_forgejo"
+_forgejo_homedir="/var/lib/forgejo"
+_forgejo_descr="Self-hosted lightweight software forge service"
+_forgejo_shell="/bin/bash"
+make_dirs="/var/lib/forgejo 0755 _forgejo _forgejo
+ /var/log/forgejo 0755 _forgejo root"
+conf_files="/etc/forgejo.conf"
+
+post_install() {
+	vinstall custom/conf/app.example.ini 640 etc forgejo.conf
+	vsv forgejo
+
+	mv "${DESTDIR}/usr/bin"/{gitea,forgejo}
+}
