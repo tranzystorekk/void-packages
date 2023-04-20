@@ -1,0 +1,15 @@
+# Template file for 'xaux'
+pkgname=xaux
+version=0.1.3
+revision=1
+depends="bash curl"
+short_desc="Collection of Void Linux utilities for packaging"
+maintainer="Marcin Puc <tranzystorek.io@protonmail.com>"
+license="Unlicense"
+homepage="https://codeberg.org/tranzystorekk/xaux"
+distfiles="https://codeberg.org/tranzystorekk/xaux/archive/v${version}.tar.gz"
+checksum=112312efcf4a1fdb0db66ad5405a8612f647ab90de3ba0199b28c8cba9e426fa
+
+do_install() {
+	vbin xrustdist
+}
