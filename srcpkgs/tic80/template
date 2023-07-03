@@ -1,0 +1,58 @@
+# Template file for 'tic80'
+pkgname=tic80
+version=1.0.2164
+revision=1
+_argparse_revision=0d5f5d0745df14a3f373f7eed85bf524714f4524
+_blip_buf_revision=330226d9b55ecbeea644e17b5e0f096a165ca07e
+_lpeg_revision=73d8614a8dea404cf7bfe25a6e4cea7183dc9fb7
+_moonscript_revision=17179283012b392bff972ad66231d73bfeec6e90
+_squirrel_revision=9dcf74f99097898dd5a111c4a55b89d1c4d606c0
+_wasm_revision=a3abb3f2d320994be59dfbe2cdafa8d0b6a8253e
+_wren_revision=4a18fc489f9ea3d253b20dd40f4cdad0d6bb40eb
+_zip_revision=d7df626f3aa457e01669f65e61bf8f484e352941
+build_wrksrc=TIC-80-${version}
+build_style=cmake
+patch_args="-Np1 --directory=${build_wrksrc}"
+hostmakedepends="pkg-config"
+makedepends="duktape-devel giflib-devel http-parser-devel libpng-devel libuv-devel lua53-devel SDL2-devel zlib-devel"
+short_desc="Fantasy computer for making, playing and sharing tiny games"
+maintainer="Marcin Puc <tranzystorek.io@protonmail.com>"
+license="MIT"
+homepage="https://tic80.com/"
+changelog="https://github.com/nesbox/TIC-80/releases"
+distfiles="https://github.com/nesbox/TIC-80/archive/refs/tags/v${version}.tar.gz
+ https://github.com/cofyc/argparse/archive/${_argparse_revision}.tar.gz
+ https://github.com/nesbox/blip-buf/archive/${_blip_buf_revision}.tar.gz
+ https://github.com/nesbox/lpeg/archive/${_lpeg_revision}.tar.gz
+ https://github.com/nesbox/moonscript/archive/${_moonscript_revision}.tar.gz
+ https://github.com/albertodemichelis/squirrel/archive/${_squirrel_revision}.tar.gz
+ https://github.com/wasm3/wasm3/archive/${_wasm_revision}.tar.gz
+ https://github.com/wren-lang/wren/archive/${_wren_revision}.tar.gz
+ https://github.com/kuba--/zip/archive/${_zip_revision}.tar.gz"
+checksum="26d0bbb45f190179f37169a7c2a32382844bafaf9b927d63c951bdf2f68f3414
+ b14cfe4b95a4cd1cf148eeecf0dba94ebf5b4312de12f5f5254e7040017477f1
+ e86870ecb4b7c3feac6afbf5ddd0aff809e14b2d16d9bde251b712fd4ecd6d99
+ 600d8644b51e5cb4d628627cd430d7beccf1d5af72a2844270983c85563de3a4
+ 10f0ebf82ae92a1389d353b349bef25deea594aebb3a65d09f36cd1193d7de18
+ 3516851095b32b812c2821ce28357bf5a533efebb6baee8276d106d4974088a3
+ 6a6d988a60f37caa24b997a6510229c4e89fce07aa666413da6ed9814ac0463f
+ fb885f12767ea8b1101145b9d86735995e28c5298b712c1c3f71ed9bbf17f567
+ f121ff9a6df3414afe958c341c0e3f05d638e43e3be735a9dad8d05ce9322c49"
+
+post_extract() {
+	mv -T argparse-${_argparse_revision} ${build_wrksrc}/vendor/argparse
+	mv -T blip-buf-${_blip_buf_revision} ${build_wrksrc}/vendor/blip-buf
+	mv -T lpeg-${_lpeg_revision} ${build_wrksrc}/vendor/lpeg
+	mv -T moonscript-${_moonscript_revision} ${build_wrksrc}/vendor/moonscript
+	mv -T squirrel-${_squirrel_revision} ${build_wrksrc}/vendor/squirrel
+	mv -T wasm3-${_wasm_revision} ${build_wrksrc}/vendor/wasm3
+	mv -T wren-${_wren_revision} ${build_wrksrc}/vendor/wren
+	mv -T zip-${_zip_revision} ${build_wrksrc}/vendor/zip
+}
+
+post_install() {
+	vmkdir usr/share/icons/hicolor/256x256/apps
+	mv ${DESTDIR}/usr/share/icons/tic80.png ${DESTDIR}/usr/share/icons/hicolor/256x256/apps/
+
+	vlicense LICENSE
+}
