@@ -1,0 +1,37 @@
+# Template file for 'Hilbish'
+pkgname=Hilbish
+version=2.2.1
+revision=1
+_inspect_commit="b611db6bfa9c12ce35dd4972032fbbd2ad5ba965"
+_lunacolors_commit="34a57c964590f89aa065188a588c7b38aff99c28"
+_succulent_commit="96dc95c24989be6596ccb9f7f7244d37f03d4acd"
+build_wrksrc="${pkgname}-${version}"
+build_style=go
+go_import_path="hilbish"
+go_ldflags="-X main.dataDir=/usr/share/hilbish"
+short_desc="Moon-powered shell"
+maintainer="Marcin Puc <tranzystorek.io@protonmail.com>"
+license="MIT"
+homepage="https://rosettea.github.io/Hilbish/"
+changelog="https://raw.githubusercontent.com/Rosettea/Hilbish/master/CHANGELOG.md"
+distfiles="https://github.com/Rosettea/Hilbish/archive/refs/tags/v${version}.tar.gz
+ https://github.com/kikito/inspect.lua/archive/${_inspect_commit}.tar.gz
+ https://github.com/Rosettea/Lunacolors/archive/${_lunacolors_commit}.tar.gz
+ https://github.com/Rosettea/Succulent/archive/${_succulent_commit}.tar.gz"
+checksum="f225e130ffab9b3c01f8bf35240bd9b3ca80dc2a85080eb32d908817ecb53ef6
+ a6ea53684eb83ea7a17674e6c9f76ca9c15fa870425c53cb13f4a463124aa37d
+ f414060c076a353f917ede6aa77d254e0aef60514dff22a62e6587c42135074b
+ b699fbaa90b9f55e55d0ed01f5abbbc74233647fb942f2704c9ca6df5db9154d"
+
+post_extract() {
+	mv -T inspect.lua-${_inspect_commit} ${pkgname}-${version}/libs/inspect
+	mv -T Lunacolors-${_lunacolors_commit} ${pkgname}-${version}/libs/lunacolors
+	mv -T Succulent-${_succulent_commit} ${pkgname}-${version}/libs/succulent
+}
+
+post_install() {
+	vinstall LICENSE 644 usr/share/licenses/hilbish
+
+	vmkdir usr/share/hilbish
+	cp -r libs docs emmyLuaDocs nature .hilbishrc.lua ${DESTDIR}/usr/share/hilbish/
+}
