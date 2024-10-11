@@ -1,0 +1,17 @@
+# Template file for 'zioom'
+pkgname=zioom
+version=0.5.1
+revision=1
+build_style=zig-build
+configure_args="-Dpie"
+short_desc="Handy cd helper"
+maintainer="tranzystorekk <tranzystorek.io@protonmail.com>"
+license="MIT"
+homepage="https://codeberg.org/tranzystorekk/zioom"
+changelog="https://codeberg.org/tranzystorekk/zioom/raw/branch/main/CHANGELOG.md"
+distfiles="https://codeberg.org/tranzystorekk/zioom/archive/v${version}.tar.gz"
+checksum=7e723b6b7df9393855521d378cbc48b1614ce6763dd0db1b5f70633bc634ce9f
+
+post_install() {
+	vlicense LICENSE
+}
