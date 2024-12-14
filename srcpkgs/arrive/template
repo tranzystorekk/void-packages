@@ -1,0 +1,24 @@
+# Template file for 'arrive'
+pkgname=arrive
+version=0.4.1
+revision=1
+build_style=cargo
+configure_args="--no-default-features --features=native-tls"
+hostmakedepends="pkg-config"
+makedepends="openssl-devel"
+short_desc="Simple CLI tool for interacting with Advent of Code"
+maintainer="tranzystorekk <tranzystorek.io@protonmail.com>"
+license="MIT"
+homepage="https://github.com/tranzystorekk/arrive"
+changelog="https://github.com/tranzystorekk/arrive/blob/master/CHANGELOG.md"
+distfiles="https://github.com/tranzystorekk/arrive/archive/refs/tags/v${version}.tar.gz"
+checksum=c4423cb0ac0ee0cde2a7f5c017348621905a4262c1c4df0dfb2248928a92f586
+
+export ARRIVE_ASSETS_GEN_DIR="${XBPS_BUILDDIR}/${pkgname}-${version}"
+
+post_install() {
+	vlicense LICENSE
+	vcompletion assets/completions/arv.bash bash arv
+	vcompletion assets/completions/arv.fish fish arv
+	vcompletion assets/completions/_arv zsh arv
+}
