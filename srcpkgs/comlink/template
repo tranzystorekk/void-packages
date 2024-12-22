@@ -1,0 +1,16 @@
+# Template file for 'comlink'
+pkgname=comlink
+version=0.1.1
+revision=1
+build_style=zig-build
+short_desc="Experimental IRC client"
+maintainer="tranzystorekk <tranzystorek.io@protonmail.com>"
+license="MIT"
+homepage="https://github.com/rockorager/comlink"
+distfiles="https://github.com/rockorager/comlink/archive/refs/tags/v${version}.tar.gz"
+checksum=070ba419f3e3f321d446f92d3681001e9fe9253e021b39b62d1ddc59f41606c2
+nopie=yes
+
+post_install() {
+	vlicense LICENSE
+}
