@@ -1,6 +1,6 @@
 # Template file for 'river'
 pkgname=river
-version=0.3.7
+version=0.3.8
 revision=1
 archs="~i686* ~armv6l* ~armv7l*"
 build_style=zig-build
@@ -14,7 +14,7 @@ maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-3.0-only"
 homepage="https://codeberg.org/river/river"
 distfiles="https://codeberg.org/river/river/releases/download/v${version}/river-${version}.tar.gz"
-checksum=a6007ff0ad1cd46b2229661c28e4602aa6fe160872293f0749c17fa95b78a873
+checksum=12c18f46df7f61a7069da67f0363e451a496ba55f85d80df7bbc6b4141a22976
 
 build_options="xwayland"
 build_options_default="xwayland"
