@@ -1,0 +1,13 @@
+diff --git a/cmake/systems/Linux.cmake b/cmake/systems/Linux.cmake
+index 8accea8..14daede 100644
+--- a/cmake/systems/Linux.cmake
++++ b/cmake/systems/Linux.cmake
+@@ -4,7 +4,7 @@ set(PLATFORM_GNU     1)
+ set(PLATFORM_MACOSX  0)
+ set(PLATFORM_FREEBSD 0)
+ 
+-set(PLATFORM_INSTALL_BIN_DIR "games")
++set(PLATFORM_INSTALL_BIN_DIR "bin")
+ set(PLATFORM_INSTALL_LIB_DIR "lib/colobot")
+ set(PLATFORM_INSTALL_DATA_DIR "share/games/colobot")
+ set(PLATFORM_INSTALL_I18N_DIR "share/locale")
