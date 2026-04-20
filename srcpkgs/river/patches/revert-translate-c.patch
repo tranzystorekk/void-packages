@@ -1,0 +1,166 @@
+diff --git a/build.zig b/build.zig
+index 664f1af..17db013 100644
+--- a/build.zig
++++ b/build.zig
+@@ -11,7 +11,6 @@ const manifest = @import("build.zig.zon");
+ const version = manifest.version;
+ 
+ const Scanner = @import("wayland").Scanner;
+-const Translator = @import("translate_c").Translator;
+ 
+ pub fn build(b: *Build) !void {
+     const target = b.standardTargetOptions(.{});
+@@ -150,15 +149,6 @@ pub fn build(b: *Build) !void {
+     const flags = b.createModule(.{ .root_source_file = b.path("common/flags.zig") });
+     const slotmap = b.createModule(.{ .root_source_file = b.path("common/slotmap.zig") });
+ 
+-    const translate_c: Translator = .init(b.dependency("translate_c", .{}), .{
+-        .name = "c",
+-        .c_source_file = b.path("river/c.h"),
+-        .target = target,
+-        .optimize = optimize,
+-    });
+-    translate_c.linkSystemLibrary("libevdev", .{});
+-    translate_c.linkSystemLibrary("libinput", .{});
+-
+     {
+         const river = b.addExecutable(.{
+             .name = "river",
+@@ -186,7 +176,6 @@ pub fn build(b: *Build) !void {
+         river.root_module.addImport("wlroots", wlroots);
+         river.root_module.addImport("flags", flags);
+         river.root_module.addImport("slotmap", slotmap);
+-        river.root_module.addImport("c", translate_c.mod);
+ 
+         river.root_module.addCSourceFile(.{
+             .file = b.path("river/wlroots_log_wrapper.c"),
+diff --git a/build.zig.zon b/build.zig.zon
+index 15fb9db..1e3b06c 100644
+--- a/build.zig.zon
++++ b/build.zig.zon
+@@ -27,10 +27,6 @@
+             .url = "https://codeberg.org/ifreund/zig-xkbcommon/archive/v0.4.0.tar.gz",
+             .hash = "xkbcommon-0.4.0-VDqIe0i2AgDRsok2GpMFYJ8SVhQS10_PI2M_CnHXsJJZ",
+         },
+-        .translate_c = .{
+-            .url = "git+https://codeberg.org/ifreund/translate-c?ref=fix-shift-assign#fdf30e6298cd1184ae6da5602aff0cb5d4cde4cb",
+-            .hash = "translate_c-0.0.0-Q_BUWrT0BgDOFSyiz0UVBIpBe3-CiEqx9ej2EecgKcBD",
+-        },
+     },
+     .fingerprint = 0xf5e3672b8e8d6efc,
+ }
+diff --git a/river/InputDevice.zig b/river/InputDevice.zig
+index 060e595..3b04875 100644
+--- a/river/InputDevice.zig
++++ b/river/InputDevice.zig
+@@ -10,7 +10,7 @@ const wlr = @import("wlroots");
+ const wl = @import("wayland").server.wl;
+ const river = @import("wayland").server.river;
+ 
+-const c = @import("c");
++const c = @import("c.zig").c;
+ const server = &@import("main.zig").server;
+ const util = @import("util.zig");
+ 
+diff --git a/river/LibinputAccelConfig.zig b/river/LibinputAccelConfig.zig
+index 2553572..ec1a182 100644
+--- a/river/LibinputAccelConfig.zig
++++ b/river/LibinputAccelConfig.zig
+@@ -9,7 +9,7 @@ const wayland = @import("wayland");
+ const wl = wayland.server.wl;
+ const river = wayland.server.river;
+ 
+-const c = @import("c");
++const c = @import("c.zig").c;
+ const server = &@import("main.zig").server;
+ const util = @import("util.zig");
+ 
+diff --git a/river/LibinputConfig.zig b/river/LibinputConfig.zig
+index fb20a22..b194a3f 100644
+--- a/river/LibinputConfig.zig
++++ b/river/LibinputConfig.zig
+@@ -8,7 +8,7 @@ const assert = std.debug.assert;
+ const wl = @import("wayland").server.wl;
+ const river = @import("wayland").server.river;
+ 
+-const c = @import("c");
++const c = @import("c.zig").c;
+ const server = &@import("main.zig").server;
+ 
+ const LibinputAccelConfig = @import("LibinputAccelConfig.zig");
+diff --git a/river/LibinputDevice.zig b/river/LibinputDevice.zig
+index 183d7ee..c6d716d 100644
+--- a/river/LibinputDevice.zig
++++ b/river/LibinputDevice.zig
+@@ -10,7 +10,7 @@ const wlr = @import("wlroots");
+ const wl = @import("wayland").server.wl;
+ const river = @import("wayland").server.river;
+ 
+-const c = @import("c");
++const c = @import("c.zig").c;
+ const server = &@import("main.zig").server;
+ const util = @import("util.zig");
+ 
+diff --git a/river/PointerBinding.zig b/river/PointerBinding.zig
+index 5a645ef..d1d3d50 100644
+--- a/river/PointerBinding.zig
++++ b/river/PointerBinding.zig
+@@ -10,7 +10,7 @@ const wayland = @import("wayland");
+ const wl = wayland.server.wl;
+ const river = wayland.server.river;
+ 
+-const c = @import("c");
++const c = @import("c.zig").c;
+ const server = &@import("main.zig").server;
+ const util = @import("util.zig");
+ 
+diff --git a/river/Server.zig b/river/Server.zig
+index 9fb6846..31f9a6d 100644
+--- a/river/Server.zig
++++ b/river/Server.zig
+@@ -13,6 +13,7 @@ const wayland = @import("wayland");
+ const wl = wayland.server.wl;
+ const wp = wayland.server.wp;
+ 
++const c = @import("c.zig").c;
+ const util = @import("util.zig");
+ 
+ const IdleInhibitManager = @import("IdleInhibitManager.zig");
+diff --git a/river/c.h b/river/c.h
+deleted file mode 100644
+index a13f2b0..0000000
+--- a/river/c.h
++++ /dev/null
+@@ -1,6 +0,0 @@
+-// SPDX-FileCopyrightText: © 2020 The River Developers
+-// SPDX-License-Identifier: GPL-3.0-only
+-
+-#include <linux/input-event-codes.h>
+-#include <libevdev/libevdev.h>
+-#include <libinput.h>
+diff --git a/river/c.zig b/river/c.zig
+new file mode 100644
+index 0000000..aead518
+--- /dev/null
++++ b/river/c.zig
+@@ -0,0 +1,8 @@
++// SPDX-FileCopyrightText: © 2020 The River Developers
++// SPDX-License-Identifier: GPL-3.0-only
++
++pub const c = @cImport({
++    @cInclude("linux/input-event-codes.h");
++    @cInclude("libevdev/libevdev.h");
++    @cInclude("libinput.h");
++});
+diff --git a/river/main.zig b/river/main.zig
+index 9a55121..195fa06 100644
+--- a/river/main.zig
++++ b/river/main.zig
+@@ -14,6 +14,7 @@ const builtin = @import("builtin");
+ const wlr = @import("wlroots");
+ const flags = @import("flags");
+ 
++const c = @import("c.zig").c;
+ const util = @import("util.zig");
+ const process = @import("process.zig");
+ 
