@@ -1,0 +1,13 @@
+diff --git a/grammar.js b/grammar.js
+index c1cecef..265394f 100644
+--- a/grammar.js
++++ b/grammar.js
+@@ -37,7 +37,7 @@ const specialEnvironment = ({ rule, name, content, options }) => {
+   };
+ };
+ 
+-module.exports = grammar({
++export default grammar({
+   name: 'latex',
+   extras: $ => [$._whitespace, $.line_comment],
+   externals: $ => [
